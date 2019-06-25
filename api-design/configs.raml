@@ -1,0 +1,58 @@
+#%RAML 1.0
+---
+title: 配置
+baseUri: https://www.t2hut.com/acm/configs/
+version: v1
+protocols: [ HTTP, HTTPS ]
+mediaType:  application/json
+types:
+  Config:
+    description: 配置
+    type: object
+    properties:
+      identifier: string
+        description: 资源的唯一标识UUID
+        example: cipher-t2hut.bodleian.catalog.oss
+      content: string
+        description: 配置的内容
+    Error:
+      description: 错误
+      type: object
+      properties:
+        code: string
+          description: 错误代码
+        message: string
+          description: 错误信息
+/groups:
+    /{groupId}:
+        /configs:
+            /{configId}:
+            get:
+                description: 查询指定配置的内容
+                responses:
+                    200:
+                    body: object
+                        properties:
+                        data: Config
+                            description: 配置
+                        example:
+                        {
+                            data: 
+                            {
+                                content: "π=3.14"
+                            }
+                        }
+                    500:
+                    400:
+                    body:
+                        type: object
+                        properties:
+                        error: Error
+                        example:
+                        {
+                            error:
+                            {
+                                code: "NullValue",
+                                message: "ConfigId不能为空"
+                            }
+                        }

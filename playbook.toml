@@ -8,6 +8,13 @@ actions = [
 ]
 
 [[scenes]]
+name = "run-test"
+place = "~/"
+actions = [
+    "ruby app-services/test_config_app_service.rb"
+]
+
+[[scenes]]
 name = "run-dev"
 place = "~/"
 actions = [
