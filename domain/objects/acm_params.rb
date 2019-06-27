@@ -30,8 +30,8 @@ class ACMParams
       return
     end
 
-    @access_key = ENV["ACM_ACCESS_KEY"]
-    @secret_key = ENV["ACM_SECRET_KEY"]
+    @access_key = ENV["T2HUT_ACM_ACCESS_KEY"]
+    @secret_key = ENV["T2HUT_ACM_SECRET_KEY"]
     @server_ip = get_server_ip(@endpoint)
   end
 

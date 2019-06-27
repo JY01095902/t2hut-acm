@@ -15,8 +15,8 @@ describe ACMParams do
     end
     it "env是dev" do
       ENV["T2HUT_ENV"] = "dev"
-      ENV["ACM_ACCESS_KEY"] = "hello-dev"
-      ENV["ACM_SECRET_KEY"] = "world-dev"
+      ENV["T2HUT_ACM_ACCESS_KEY"] = "hello-dev"
+      ENV["T2HUT_ACM_SECRET_KEY"] = "world-dev"
       Time.stub :now, Time.at(0) do 
         class ACMParams
           def get_server_ip(region_id)
@@ -35,8 +35,8 @@ describe ACMParams do
     end
     it "env是stg" do
       ENV["T2HUT_ENV"] = "stg"
-      ENV["ACM_ACCESS_KEY"] = "hello-stg"
-      ENV["ACM_SECRET_KEY"] = "world-stg"
+      ENV["T2HUT_ACM_ACCESS_KEY"] = "hello-stg"
+      ENV["T2HUT_ACM_SECRET_KEY"] = "world-stg"
       Time.stub :now, Time.at(0) do 
         class ACMParams
           def get_server_ip(region_id)
