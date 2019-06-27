@@ -14,20 +14,12 @@ class HTTPResponse
 end
 
 class HTTPClient
-  def get(url, header = nil)
+  def get(url, headers = nil)
     uri = URI(url)
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true if uri.scheme == 'https'
-    response = http.get(uri, header)
+    @http = Net::HTTP.new(uri.host, uri.port) if @http == nil
+    @http.use_ssl = true if uri.scheme == 'https'
+    response = @http.get(uri, headers)
 
-    return HTTPResponse.new(response.code, response.body, response.to_hash)
+    return HTTPResponse.new(response.code.to_i, response.body, response.to_hash)
   end
-
-  public :get
 end
-
-# url = "https://gateway.p2shop.com.cn/inventories-for-stk-api/api/v2/plants/EE-CDVQ/stocktaking-scheduled-dates?tenantCode=eland"
-# client = HTTPClient.new
-# response = client.get(url)
-
-# pp response
