@@ -11,7 +11,9 @@ actions = [
 name = "run-test"
 place = "~/"
 actions = [
-    "ruby app-services/test_config_app_service.rb"
+    "ruby infra/test_http_client.rb",
+    "ruby domain/objects/test_acm_params.rb",
+    "ruby domain/services/test_acm_service.rb"
 ]
 
 [[scenes]]
