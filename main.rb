@@ -1,9 +1,9 @@
 require "rack/cors"
 require "grape"
 require "base64"
+require_relative "app-services/config_app_service.rb"
 
 class API < Grape::API
-  # use Configuration
   use Rack::Cors do
     allow do
       origins "*"
@@ -17,17 +17,16 @@ class API < Grape::API
   end
 
   params do
-    requires :groupId, type: String
+    requires :groupCode, type: String
     requires :configId, type: String
   end
-  get "groups/:groupId/configs/:configId" do
-    group_id = params[:groupId]
+  get "groups/:groupCode/configs/:configId" do
+    group_code = params[:groupCode]
     config_id = Base64.strict_decode64(params[:configId])
+    config_app_service = ConfigAppService.new
+    config = config_app_service.get_config(group_code, config_id)
 
     status :ok
-    return {
-        group_id: group_id,
-        config_id: config_id,
-    }
+    return config
   end
 end

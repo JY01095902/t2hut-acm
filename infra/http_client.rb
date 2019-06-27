@@ -1,5 +1,4 @@
 require "net/https"
-require "pp"
 
 class HTTPResponse
   attr_reader :status_code
