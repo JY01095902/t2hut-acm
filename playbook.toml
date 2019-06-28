@@ -1,23 +1,24 @@
 title = "Playbook"
 
 [[scenes]]
-name = "run-debug"
+name = "debug"
 place = "~/"
 actions = [
     "rackup --host=0.0.0.0 --port=9293"
 ]
 
 [[scenes]]
-name = "run-test"
+name = "test"
 place = "~/"
 actions = [
     "ruby infra/test_http_client.rb",
     "ruby domain/objects/test_acm_params.rb",
-    "ruby domain/services/test_acm_service.rb"
+    "ruby domain/services/test_config_service.rb",
+    "ruby domain/services/test_encryption_service.rb"
 ]
 
 [[scenes]]
-name = "run-dev"
+name = "dev"
 place = "~/"
 actions = [
     "docker stop $(docker ps -a -q --filter name=t2hut-acm)",

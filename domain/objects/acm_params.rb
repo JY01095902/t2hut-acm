@@ -47,9 +47,10 @@ class ACMParams
       return
     end
     
+    return nil if response.body == nil || response.body.size <= 0
+
     regexp = /\r\n|[\r\n]/
-    server_ip = response.body.split(regexp)[0] if response.body != nil && response.body.size > 0
-    
+    server_ip = response.body.split(regexp)[0]
     return server_ip
   end
 end
