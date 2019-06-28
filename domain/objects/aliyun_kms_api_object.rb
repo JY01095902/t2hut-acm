@@ -2,7 +2,7 @@ require "base64"
 require "time"
 require "cgi"
 
-class KMSParams
+class AliyunKMSAPIObject
   def initialize(access_key, secret_key, region_id, key_id = nil)
     @access_key = access_key
     @secret_key = secret_key

@@ -1,15 +1,10 @@
 
 require "logger"
-require_relative "../../infra/http_client.rb"
 
-class ACMParams
-  attr_reader :region_id
-  attr_reader :endpoint
-  attr_reader :namespace
-  attr_reader :server_ip
+class AliyunACMAPIObject
   attr_reader :access_key
   attr_reader :secret_key
-
+  attr_reader :region_id
   def initialize
     env = ENV["T2HUT_ENV"]
     logger = Logger.new(STDERR)
@@ -35,7 +30,37 @@ class ACMParams
     @server_ip = get_server_ip(@endpoint)
   end
 
+  def generate_url(group_id, config_id)
+    query = [
+      "tenant=#{URI.encode_www_form_component(@namespace)}",
+      "group=#{URI.encode_www_form_component(group_id)}",
+      "dataId=#{URI.encode_www_form_component(config_id)}"
+    ]
+    url = "http://#{@server_ip}:8080/diamond-server/config.co?#{query.join("&")}"
+    
+    return url
+  end
+
+  def generate_headers(group_id)
+    timestamp = (Time.new.to_f * 1000).to_i
+
+    return {
+      "Spas-AccessKey": @access_key,
+      "timeStamp": timestamp.to_s,
+      "Spas-Signature": sign(@secret_key, @namespace, group_id, timestamp),
+    }
+  end
+
   private
+
+  def sign(secret_key, namespace, group_id, timestamp)
+    sign_string = "#{namespace}+#{group_id}+#{timestamp}"
+
+    return Base64.strict_encode64(
+             OpenSSL::HMAC.digest("sha1", secret_key, sign_string)
+           )
+  end
+
   def get_server_ip(endpoint)
     uri = URI("http://#{endpoint}:8080/diamond-server/diamond")
     client = HTTPClient.new
