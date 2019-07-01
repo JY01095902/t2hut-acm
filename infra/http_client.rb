@@ -13,12 +13,17 @@ class HTTPResponse
 end
 
 class HTTPClient
-  def get(url, headers = nil)
+  def self.get(url, headers = nil)
     uri = URI(url)
-    @http = Net::HTTP.new(uri.host, uri.port) if @http == nil
-    @http.use_ssl = true if uri.scheme == 'https'
-    response = @http.get(uri, headers)
+    http = HTTPClient.http_class.new(uri.host, uri.port)
+    http.use_ssl = true if uri.scheme == 'https'
+    response = http.get(uri, headers)
 
-    return HTTPResponse.new(response.code.to_i, response.body, response.to_hash)
+    result = response == nil ? HTTPResponse.new(404, nil, nil) : 
+              HTTPResponse.new(response.code.to_i, response.body, response.to_hash)
+  end
+
+  def self.http_class
+    @http_class || Net::HTTP
   end
 end

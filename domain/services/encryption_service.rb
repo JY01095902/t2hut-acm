@@ -1,14 +1,14 @@
 
 require "json"
-require_relative "../../factories/aliyun_api_factory.rb"
+require_relative "../../factories/aliyun_proxy_factory.rb"
 
 class EncryptionService
   def decrypt(ciphertext)
-    kms_obj =AliyunAPIFactory.new.create_aliyun_api_object("kms")
-    url = kms_obj.generate_url(ciphertext)
-
-    response = Net::HTTP.get_response(URI(url))
-    result = JSON.parse(response.body)
-    result["Plaintext"]
+    kms_proxy = AliyunProxyFactory.new.create_aliyun_proxy("kms")
+    result = kms_proxy.decrypt(ciphertext)
+    if result != nil 
+      json_result = JSON.parse(result)
+      json_result["Plaintext"]
+    end
   end
 end

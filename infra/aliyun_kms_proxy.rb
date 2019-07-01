@@ -2,7 +2,7 @@ require "base64"
 require "time"
 require "cgi"
 
-class AliyunKMSAPIObject
+class AliyunKMSProxy
   def initialize(access_key, secret_key, region_id, key_id = nil)
     @access_key = access_key
     @secret_key = secret_key
@@ -14,6 +14,13 @@ class AliyunKMSAPIObject
     @format = "JSON"
   end
 
+  def decrypt(ciphertext)
+    url = generate_url(ciphertext)
+    response = HTTPClient.get(url)
+    config = response.status_code == 200 ? response.body : nil
+  end
+
+  private
   def generate_url(ciphertext)
     params = {
       Format: @format,
