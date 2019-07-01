@@ -7,9 +7,11 @@ class ConfigAppService
     config_service = ConfigService.new
     config = config_service.get_config(group_id, config_id)
 
-    if config_id.start_with?("cipher-")
+    if config.encrypted?
       encryption_service = EncryptionService.new
-      config = encryption_service.decrypt(config)
+      config_content = encryption_service.decrypt(config.content)
+    else
+      config.config_content
     end
   end
 end
