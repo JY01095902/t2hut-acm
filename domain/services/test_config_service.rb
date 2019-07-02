@@ -7,11 +7,13 @@ describe ConfigService do
       service = ConfigService.new
       config = service.get_config("T2HUT", "cipher-t2hut.service.point")
       config.wont_be_nil
+      config.content.wont_be_nil
     end
     it "获取不存在的配置" do
       service = ConfigService.new
       config = service.get_config("T2HUT", "XXX")
-      config.must_be_nil
+      config.wont_be_nil
+      config.content.must_be_nil
     end
   end
 end
