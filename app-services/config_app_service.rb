@@ -11,7 +11,8 @@ class ConfigAppService
       encryption_service = EncryptionService.new
       config_content = encryption_service.decrypt(config.content)
     else
-      config.config_content
+      puts OpenSSL::Digest::MD5.hexdigest(config.content)
+      config.content
     end
   end
 end
