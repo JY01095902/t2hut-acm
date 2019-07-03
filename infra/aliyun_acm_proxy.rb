@@ -40,8 +40,12 @@ class AliyunACMProxy
   end
 
   def observe_change(group_id, config_id, content)
-    puts generate_listen_url(group_id, config_id, content)
-    puts generate_listen_headers(group_id)
+    url, body = generate_listen_url(group_id, config_id, content)
+    headers = generate_listen_headers(group_id)
+    res = HTTPClient.post(url, body, headers)
+
+    puts res.status_code
+    puts res.body
   end
 
   private
@@ -87,7 +91,8 @@ class AliyunACMProxy
     group = URI.encode_www_form_component(group_id)
     tenant = URI.encode_www_form_component(@namespace)
     # contentMD5 = URI.encode_www_form_component(OpenSSL::Digest::MD5.hexdigest(content))
-    contentMD5 = "f7ce9ae5b8ed029b3f901ad074f1278f"
+    # contentMD5 = "f7ce9ae5b8ed029b3f901ad074f1278f"
+    contentMD5 = "4120caecec9a53d06464f20a38883554"
 
     two = "\u0002"
     one = "\u0001"
@@ -97,7 +102,8 @@ class AliyunACMProxy
 
     query = "#{data_id}#{two}#{group}#{two}#{contentMD5}#{two}#{tenant}#{one}"
     query = "Probe-Modify-Request=#{URI.encode_www_form_component(query)}"
-    url = "http://#{@server_ip}:8080/diamond-server/config.co?#{query}"
+    url = "http://#{@server_ip}:8080/diamond-server/config.co"
+    return url, query
   end
 
   def generate_listen_headers(group_id)
@@ -109,14 +115,14 @@ end
 
 # content = 'customers = [\r\n    \"hello-world-app\",\r\n    \"black-magic-app\",\r\n    \"black-magic-app4\"\r\n]\r\n\r\nlogLevel = WARN34455'
 
-# content = '"customers = [
-#   "hello-world-app",
-#   "black-magic-app",
-#   "black-magic-app4"
-# ]
+content = '"customers = [
+  "hello-world-app",
+  "black-magic-app",
+  "black-magic-app4"
+]
 
-# logLevel = WARN34455"'
-# puts AliyunACMProxy.new.observe_change("T2HUT", "t2hut-acm-customers", content)
+logLevel = WARN34455"'
+puts AliyunACMProxy.new.observe_change("T2HUT", "t2hut-acm-customers", content)
 
 # t2hut-acm-customers%02T2HUT%02cd7a3417-103e-46a5-be49-0d4f83d4f947%01
 

@@ -23,6 +23,16 @@ class HTTPClient
               HTTPResponse.new(response.code.to_i, response.body, response.to_hash)
   end
 
+  def self.post(url, data, headers = nil)
+    uri = URI(url)
+    http = HTTPClient.http_class.new(uri.host, uri.port)
+    http.use_ssl = true if uri.scheme == 'https'
+    response = http.post(uri, data, headers)
+
+    result = response == nil ? HTTPResponse.new(404, nil, nil) : 
+              HTTPResponse.new(response.code.to_i, response.body, response.to_hash)
+  end
+
   def self.http_class
     @http_class || Net::HTTP
   end
