@@ -1,8 +1,8 @@
 
 require "base64"
 require "time"
+require "json"
 require_relative "http_client.rb"
-# require "pp"
 
 class AliyunACMProxy
   attr_reader :access_key
@@ -37,6 +37,29 @@ class AliyunACMProxy
     headers = generate_headers(group_id)
     response = HTTPClient.get(url, headers)
     config = response.status_code == 200 ? response.body : nil
+  end
+
+  def get_all_configs
+    query = [
+      "method=getAllConfigByTenant",
+      "tenant=#{URI.encode_www_form_component(@namespace)}",
+      "pageNo=1",
+      "pageSize=1000"
+    ]
+    url = "http://#{@server_ip}:8080/diamond-server/basestone.do?#{query.join("&")}"
+    timestamp = (Time.new.to_f * 1000).to_i
+    sign_string = "#{@namespace}+#{timestamp}"
+    signature = Base64.strict_encode64(
+                  OpenSSL::HMAC.digest("sha1", @secret_key, sign_string)
+                )
+    headers = {
+      "Spas-AccessKey": @access_key,
+      "timeStamp": timestamp.to_s,
+      "Spas-Signature": signature,
+    }
+
+    response = HTTPClient.get(url, headers)
+    result = response.status_code == 200 ? JSON.parse(response.body)["pageItems"] : nil
   end
 
   def generate_listen_url(group_id, config_id, content)

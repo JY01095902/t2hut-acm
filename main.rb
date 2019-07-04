@@ -29,4 +29,18 @@ class API < Grape::API
     status :ok
     return config
   end
+
+  get :configs do
+    config_app_service = ConfigAppService.new
+    configs = []
+    config_app_service.get_all_configs.each {|config|
+      configs << {
+        data_id: config.data_id,
+        group_id: config.group_id
+      }
+    }
+
+    status :ok
+    return configs
+  end
 end

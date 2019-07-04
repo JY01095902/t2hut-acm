@@ -7,4 +7,8 @@ class ConfigRepository
     acm_proxy = AliyunProxyFactory.new.create_aliyun_proxy("acm")
     acm_proxy.get_config(group_id, config_id)
   end
+
+  def get_all_configs
+    
+  end
 end
