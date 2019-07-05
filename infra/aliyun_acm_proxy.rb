@@ -32,8 +32,8 @@ class AliyunACMProxy
     @is_valid
   end
 
-  def get_config(group, config_id)
-    url = generate_url(group, config_id)
+  def get_config(group, data_id)
+    url = generate_url(group, data_id)
     headers = generate_headers(group)
     response = HTTPClient.get(url, headers)
     config = response.status_code == 200 ? response.body : nil
@@ -62,8 +62,8 @@ class AliyunACMProxy
     result = response.status_code == 200 ? JSON.parse(response.body)["pageItems"] : nil
   end
 
-  def generate_listen_url(group, config_id, content)
-    data_id = URI.encode_www_form_component(config_id)
+  def generate_listen_url(group, data_id, content)
+    data_id = URI.encode_www_form_component(data_id)
     group = URI.encode_www_form_component(group)
     tenant = URI.encode_www_form_component(@namespace)
     contentMD5 = URI.encode_www_form_component(OpenSSL::Digest::MD5.hexdigest(content))
@@ -100,11 +100,11 @@ class AliyunACMProxy
     end
   end
 
-  def generate_url(group, config_id)
+  def generate_url(group, data_id)
     query = [
       "tenant=#{URI.encode_www_form_component(@namespace)}",
       "group=#{URI.encode_www_form_component(group)}",
-      "dataId=#{URI.encode_www_form_component(config_id)}"
+      "dataId=#{URI.encode_www_form_component(data_id)}"
     ]
     url = "http://#{@server_ip}:8080/diamond-server/config.co?#{query.join("&")}"
   end

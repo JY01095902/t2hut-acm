@@ -8,8 +8,9 @@ class Config
   attr_reader :data_id
   attr_reader :content
 
-  def initialize(group, data_id)
-    @identifier = generate_identifier(group, data_id)
+  def initialize(identifier)
+    group, data_id = parse_identifier(identifier)
+    @identifier = identifier
     @group = group
     @data_id = data_id
 
@@ -34,10 +35,20 @@ class Config
     }
   end
 
+
+  def self.generate_identifier(group, data_id)
+    Base64.strict_encode64("#{group}|#{data_id}")
+  end
+
   private
 
-  def generate_identifier(group, data_id)
-    Base64.strict_encode64("#{group}|#{data_id}")
+  def parse_identifier(identifier)
+    config_id = Base64.strict_decode64(identifier)
+    idx = config_id.index("|")
+    group = config_id[0...idx]
+    data_id = config_id[idx + 1..config_id.size]
+
+    return group, data_id
   end
 
   def self.config_repository_class

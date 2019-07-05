@@ -3,15 +3,14 @@ require_relative "../domain/services/config_service.rb"
 require_relative "../domain/services/encryption_service.rb"
 
 class ConfigAppService
-  def get_config(group, config_id)
+  def get_config(identifier)
     config_service = ConfigService.new
-    config = config_service.get_config(group, config_id)
+    config = config_service.get_config(identifier)
 
     if config.encrypted?
       encryption_service = EncryptionService.new
       config_content = encryption_service.decrypt(config.content)
-    else
-      config.content
+      config
     end
   end
 

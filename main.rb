@@ -1,6 +1,5 @@
 require "rack/cors"
 require "grape"
-require "base64"
 require_relative "app-services/config_app_service.rb"
 require_relative "infra/api_result.rb"
 
@@ -14,38 +13,26 @@ class API < Grape::API
   format :json
 
   get :ping do
-    return { result: "pong" }
+    { result: "pong" }
   end
 
   params do
-    requires :groupId, type: String
-    requires :configId, type: String
+    requires :identifier, type: String
   end
-  get "groups/:groupId/configs/:configId" do
-    group = params[:groupId]
-    config_id = Base64.strict_decode64(params[:configId])
+  get "configs/:identifier" do
+    identifier = params[:identifier]
     config_app_service = ConfigAppService.new
-    config = config_app_service.get_config(group, config_id)
-
+    config = config_app_service.get_config(identifier)
+puts config
     status :ok
-    return config
+    APIResult.get_object_template(config)
   end
 
   get :configs do
     config_app_service = ConfigAppService.new
-    # configs = []
-    # config_app_service.get_all_configs.each {|config|
-    #   configs << {
-    #     identifier: config.identifier,
-    #     data_id: config.data_id,
-    #     group: config.group,
-    #     content: config.content
-    #   }
-    # }
-
     configs = config_app_service.get_all_configs
 
     status :ok
-    return APIResult.get_array_template(configs, configs.size)
+    APIResult.get_array_template(configs, configs.size)
   end
 end

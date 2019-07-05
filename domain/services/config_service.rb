@@ -3,8 +3,8 @@ require_relative "../entities/config.rb"
 require_relative "../../factories/aliyun_proxy_factory.rb"
 
 class ConfigService
-  def get_config(group, config_id)
-    config = Config.new(group, config_id)
+  def get_config(identifier)
+    config = Config.new(identifier)
   end
 
   def get_all_configs
@@ -12,7 +12,7 @@ class ConfigService
     list = acm_proxy.get_all_configs
     configs = []
     list.each {|item|
-      configs << Config.new(item["group"], item["dataId"])
+      configs << Config.new(Config.generate_identifier(item["group"], item["dataId"]))
     }
     configs
   end
