@@ -2,6 +2,7 @@ require "rack/cors"
 require "grape"
 require_relative "app-services/config_app_service.rb"
 require_relative "infra/api_result.rb"
+require_relative "factories/api_result_factory.rb"
 
 class API < Grape::API
   use Rack::Cors do
@@ -25,7 +26,7 @@ class API < Grape::API
     config = config_app_service.get_config(identifier)
 puts config
     status :ok
-    APIResult.get_object_template(config)
+    APIResultFactory.create_api_result("single").template(config)
   end
 
   get :configs do
@@ -33,6 +34,6 @@ puts config
     configs = config_app_service.get_all_configs
 
     status :ok
-    APIResult.get_array_template(configs, configs.size)
+    APIResultFactory.create_api_result("array").template(configs, configs.size)
   end
 end

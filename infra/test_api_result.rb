@@ -1,5 +1,5 @@
 require "minitest/autorun"
-require_relative "api_result.rb"
+require_relative "../factories/api_result_factory.rb"
 
 class Person
   def initialize(name, age)
@@ -15,13 +15,13 @@ class Person
   end
 end
 
-describe APIResult do
+describe APIArrayResult do
   describe "对象模板" do
     it "对象没有to_hash方法，应该返回
       {
         data: nil
       }" do
-      template = APIResult.get_object_template(nil)
+      template = APIResultFactory.create_api_result("single").template(nil)
       template.class.name.must_equal "Hash"
       template["data"].must_be_nil
     end
@@ -33,7 +33,7 @@ describe APIResult do
         }
       }" do
       tom = Person.new("tom", 3)
-      template = APIResult.get_object_template(tom)
+      template = APIResultFactory.create_api_result("single").template(tom)
       template.class.name.must_equal "Hash"
 
       template[:data].class.name.must_equal "Hash"
@@ -50,7 +50,7 @@ describe APIResult do
         }
       }" do
       people = [nil, nil, nil]
-      template = APIResult.get_array_template(people, people.size)
+      template = APIResultFactory.create_api_result("array").template(people, people.size)
       template.class.name.must_equal "Hash"
       template[:data].class.name.must_equal "Hash"
       template[:data][:total_items].must_equal people.size
@@ -73,7 +73,7 @@ describe APIResult do
       tom = Person.new("tom", 3)
       kite = Person.new("kite", 4)
       people = [tom, kite]
-      template = APIResult.get_array_template(people, people.size)
+      template = APIResultFactory.create_api_result("array").template(people, people.size)
       template.class.name.must_equal "Hash"
       template[:data].class.name.must_equal "Hash"
       template[:data][:total_items].must_equal people.size
