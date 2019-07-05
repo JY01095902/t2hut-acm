@@ -2,6 +2,7 @@ require "rack/cors"
 require "grape"
 require "base64"
 require_relative "app-services/config_app_service.rb"
+require_relative "infra/api_result.rb"
 
 class API < Grape::API
   use Rack::Cors do
@@ -32,15 +33,19 @@ class API < Grape::API
 
   get :configs do
     config_app_service = ConfigAppService.new
-    configs = []
-    config_app_service.get_all_configs.each {|config|
-      configs << {
-        data_id: config.data_id,
-        group: config.group
-      }
-    }
+    # configs = []
+    # config_app_service.get_all_configs.each {|config|
+    #   configs << {
+    #     identifier: config.identifier,
+    #     data_id: config.data_id,
+    #     group: config.group,
+    #     content: config.content
+    #   }
+    # }
+
+    configs = config_app_service.get_all_configs
 
     status :ok
-    return configs
+    return APIResult.get_array_template(configs, configs.size)
   end
 end

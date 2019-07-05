@@ -25,6 +25,15 @@ class Config
     @content = @repository.get_config(group, data_id)
   end
 
+  def to_hash
+    result = {
+      identifier: @identifier,
+      group: @group,
+      data_id: @data_id,
+      content: @content,
+    }
+  end
+
   private
 
   def generate_identifier(group, data_id)

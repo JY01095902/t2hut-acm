@@ -14,7 +14,7 @@ class Watcher
   def watch(mode, &callback)
     if mode == "once"
       listen(&callback)
-    elsif mode = "always"
+    elsif mode == "always"
       loop do
         listen(&callback)
         @config.refresh
