@@ -21,10 +21,10 @@ class API < Grape::API
     requires :configId, type: String
   end
   get "groups/:groupId/configs/:configId" do
-    group_id = params[:groupId]
+    group = params[:groupId]
     config_id = Base64.strict_decode64(params[:configId])
     config_app_service = ConfigAppService.new
-    config = config_app_service.get_config(group_id, config_id)
+    config = config_app_service.get_config(group, config_id)
 
     status :ok
     return config
@@ -36,7 +36,7 @@ class API < Grape::API
     config_app_service.get_all_configs.each {|config|
       configs << {
         data_id: config.data_id,
-        group_id: config.group_id
+        group: config.group
       }
     }
 

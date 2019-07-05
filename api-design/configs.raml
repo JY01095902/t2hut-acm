@@ -11,8 +11,14 @@ types:
     type: object
     properties:
       identifier: string
-        description: 资源的唯一标识UUID
+        description: 配置的唯一标识UUID，group + | + data_id，base64编码后的结果
+        example: VDJIVVR8Y2lwaGVyLXQyaHV0LmJvZGxlaWFuLmNhdGFsb2cub3Nz
+      data_id: string
+        description: 在阿里云ACM里登记的dataId
         example: cipher-t2hut.bodleian.catalog.oss
+      group: string
+        description: 配置分组
+        example: T2HUT
       content: string
         description: 配置的内容
     Error:
@@ -23,36 +29,81 @@ types:
           description: 错误代码
         message: string
           description: 错误信息
-/groups:
-    /{groupId}:
-        /configs:
-            /{configId}:
-            get:
-                description: 查询指定配置的内容
-                responses:
-                    200:
-                    body: object
-                        properties:
-                        data: Config
-                            description: 配置
-                        example:
-                        {
-                            data: 
-                            {
-                                content: "π=3.14"
-                            }
-                        }
-                    500:
-                    400:
-                    body:
-                        type: object
-                        properties:
-                        error: Error
-                        example:
-                        {
-                            error:
-                            {
-                                code: "NullValue",
-                                message: "ConfigId不能为空"
-                            }
-                        }
+
+/configs:
+get:
+  description: 查询所有的配置
+  responses:
+    200:
+    body: object
+      properties:
+      data: object
+          description: 响应数据
+          properties:
+          total_items:  int
+            description: 配置资源的总数量
+            type: int
+          items:  []Config
+      example:
+      {
+        data: 
+        {
+          total_items: 1,
+          items:
+          [
+            {
+              identifier: "VDJIVVR8Y2lwaGVyLXQyaHV0LmJvZGxlaWFuLmNhdGFsb2cub3Nz",
+              data_id: "cipher-t2hut.bodleian.catalog.oss",
+              group: "T2HUT",
+              content: "π=3.14"
+            }
+          ]
+        }
+      }
+    500:
+    400:
+    body: object
+      properties:
+      error: Error
+      example:
+      {
+        error:
+        {
+          code: "NullValue",
+          message: "ConfigId不能为空"
+        }
+      }
+
+/configs/{configId}: 
+get:
+  description: 查询指定配置的内容
+  responses:
+    200:
+    body: object
+      properties:
+      data: Config
+        description: 配置
+      example:
+      {
+        data: 
+        {
+          identifier: "VDJIVVR8Y2lwaGVyLXQyaHV0LmJvZGxlaWFuLmNhdGFsb2cub3Nz",
+          data_id: "cipher-t2hut.bodleian.catalog.oss",
+          group: "T2HUT",
+          content: "π=3.14"
+        }
+      }
+    500:
+    400:
+    body:
+      type: object
+      properties:
+      error: Error
+      example:
+      {
+        error:
+        {
+          code: "NullValue",
+          message: "ConfigId不能为空"
+        }
+      }

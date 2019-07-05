@@ -27,9 +27,9 @@ class Watcher
   private
   def listen(&callback)
     acm_proxy = AliyunProxyFactory.new.create_aliyun_proxy("acm")
-    acm_proxy.get_config(@config.group_id, @config.data_id)
-    url, data = acm_proxy.generate_listen_url(@config.group_id, @config.data_id, @config.content)
-    headers = acm_proxy.generate_listen_headers(@config.group_id)
+    acm_proxy.get_config(@config.group, @config.data_id)
+    url, data = acm_proxy.generate_listen_url(@config.group, @config.data_id, @config.content)
+    headers = acm_proxy.generate_listen_headers(@config.group)
     response = HTTPClient.post(url, data, headers)
     callback.call(!response.body.empty?) if response.status_code == 200
   end

@@ -1,17 +1,20 @@
 
+require "base64"
 require_relative "../../repositories/config_repository.rb"
 
 class Config
-  attr_reader :group_id
+  attr_reader :identifier
+  attr_reader :group
   attr_reader :data_id
   attr_reader :content
 
-  def initialize(group_id, data_id)
-    @group_id = group_id
+  def initialize(group, data_id)
+    @identifier = generate_identifier(group, data_id)
+    @group = group
     @data_id = data_id
 
-    @repository = ConfigRepository.new
-    @content = load_content(@repository, group_id, data_id)
+    @repository = Config.config_repository_class.new
+    @content = @repository.get_config(group, data_id)
   end
 
   def encrypted?
@@ -19,11 +22,16 @@ class Config
   end
 
   def refresh
-    @content = load_content(@repository, group_id, data_id)
+    @content = @repository.get_config(group, data_id)
   end
 
   private
-  def load_content(repository, group_id, data_id)
-    repository.get_config(group_id, data_id)
+
+  def generate_identifier(group, data_id)
+    Base64.strict_encode64("#{group}|#{data_id}")
+  end
+
+  def self.config_repository_class
+    @config_repository_class || ConfigRepository
   end
 end

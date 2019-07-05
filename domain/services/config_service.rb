@@ -3,8 +3,8 @@ require_relative "../entities/config.rb"
 require_relative "../../factories/aliyun_proxy_factory.rb"
 
 class ConfigService
-  def get_config(group_id, config_id)
-    config = Config.new(group_id, config_id)
+  def get_config(group, config_id)
+    config = Config.new(group, config_id)
   end
 
   def get_all_configs

@@ -32,9 +32,9 @@ class AliyunACMProxy
     @is_valid
   end
 
-  def get_config(group_id, config_id)
-    url = generate_url(group_id, config_id)
-    headers = generate_headers(group_id)
+  def get_config(group, config_id)
+    url = generate_url(group, config_id)
+    headers = generate_headers(group)
     response = HTTPClient.get(url, headers)
     config = response.status_code == 200 ? response.body : nil
   end
@@ -62,9 +62,9 @@ class AliyunACMProxy
     result = response.status_code == 200 ? JSON.parse(response.body)["pageItems"] : nil
   end
 
-  def generate_listen_url(group_id, config_id, content)
+  def generate_listen_url(group, config_id, content)
     data_id = URI.encode_www_form_component(config_id)
-    group = URI.encode_www_form_component(group_id)
+    group = URI.encode_www_form_component(group)
     tenant = URI.encode_www_form_component(@namespace)
     contentMD5 = URI.encode_www_form_component(OpenSSL::Digest::MD5.hexdigest(content))
 
@@ -78,8 +78,8 @@ class AliyunACMProxy
     return url, query
   end
 
-  def generate_listen_headers(group_id)
-    headers = generate_headers(group_id)
+  def generate_listen_headers(group)
+    headers = generate_headers(group)
     headers["longPullingTimeout"] = "30000"
     return headers
   end
@@ -100,18 +100,18 @@ class AliyunACMProxy
     end
   end
 
-  def generate_url(group_id, config_id)
+  def generate_url(group, config_id)
     query = [
       "tenant=#{URI.encode_www_form_component(@namespace)}",
-      "group=#{URI.encode_www_form_component(group_id)}",
+      "group=#{URI.encode_www_form_component(group)}",
       "dataId=#{URI.encode_www_form_component(config_id)}"
     ]
     url = "http://#{@server_ip}:8080/diamond-server/config.co?#{query.join("&")}"
   end
   
-  def generate_headers(group_id)
+  def generate_headers(group)
     timestamp = (Time.new.to_f * 1000).to_i
-    sign_string = "#{@namespace}+#{group_id}+#{timestamp}"
+    sign_string = "#{@namespace}+#{group}+#{timestamp}"
     signature = Base64.strict_encode64(
                   OpenSSL::HMAC.digest("sha1", @secret_key, sign_string)
                 )
