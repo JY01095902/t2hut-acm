@@ -80,7 +80,7 @@ class AliyunACMProxy
 
   def generate_listen_headers(group)
     headers = generate_headers(group)
-    headers["longPullingTimeout"] = "30000"
+    headers["longPullingTimeout"] = "10000"
     return headers
   end
 

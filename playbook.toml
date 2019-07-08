@@ -23,7 +23,6 @@ actions = [
 name = "dev"
 place = "~/"
 actions = [
-  "act test",
   "docker build --force-rm -t t2hut-acm .",
   "docker stop $(docker ps -a -q --filter name=t2hut-acm)",
   "docker rm $(docker ps -a -q --filter name=t2hut-acm)",

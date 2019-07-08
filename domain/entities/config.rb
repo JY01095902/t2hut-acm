@@ -1,6 +1,8 @@
 
 require "base64"
+require "json"
 require_relative "../../repositories/config_repository.rb"
+require_relative "../../infra/http_client.rb"
 
 class Config
   attr_reader :identifier
@@ -24,6 +26,23 @@ class Config
 
   def refresh
     @content = @repository.get_config(group, data_id)
+
+    if @data_id == "cipher-t2hut.bodleian.catalog.oss"
+      url = "http://10.202.101.62:9292/catalog/events"
+      data = {
+        event_name: "ConfigChanged",
+        payload: {
+          config_id: @identifier,
+          group: @group,
+          data_id: @data_id
+        }
+      }
+      puts "JSON(data) ----- #{JSON(data)}"
+
+      response = HTTPClient.post(url, JSON(data), { "Content-Type" => "application/json" })
+
+      puts "response.body ------- #{response.status_code}" 
+    end
   end
 
   def to_hash
