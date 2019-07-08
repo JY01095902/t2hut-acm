@@ -6,7 +6,7 @@ class Config
   attr_reader :identifier
   attr_reader :group
   attr_reader :data_id
-  attr_reader :content
+  attr_accessor :content
 
   def initialize(identifier)
     group, data_id = parse_identifier(identifier)

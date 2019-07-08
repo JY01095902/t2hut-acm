@@ -11,10 +11,12 @@ actions = [
 name = "test"
 place = "~/"
 actions = [
-    "ruby infra/test_http_client.rb -v",
-    "ruby infra/test_aliyun_acm_proxy.rb -v",
-    "ruby domain/services/test_config_service.rb -v",
-    "ruby domain/services/test_encryption_service.rb -v"
+    "ruby infra/test_http_client.rb",
+    "ruby infra/test_aliyun_acm_proxy.rb",
+    "ruby infra/test_api_result.rb",
+    "ruby domain/services/test_config_service.rb",
+    "ruby domain/services/test_encryption_service.rb",
+    "ruby app-services/test_config_app_service.rb"
 ]
 
 [[scenes]]

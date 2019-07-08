@@ -1,5 +1,5 @@
 require "minitest/autorun"
-require_relative "../factories/api_result_factory.rb"
+require_relative "api_result.rb"
 
 class Person
   def initialize(name, age)
@@ -21,7 +21,7 @@ describe APIArrayResult do
       {
         data: nil
       }" do
-      template = APIResultFactory.create_api_result("single").template(nil)
+      template = APISingleResult.create(nil)
       template.class.name.must_equal "Hash"
       template["data"].must_be_nil
     end
@@ -33,7 +33,7 @@ describe APIArrayResult do
         }
       }" do
       tom = Person.new("tom", 3)
-      template = APIResultFactory.create_api_result("single").template(tom)
+      template = APISingleResult.create(tom)
       template.class.name.must_equal "Hash"
 
       template[:data].class.name.must_equal "Hash"
@@ -50,7 +50,7 @@ describe APIArrayResult do
         }
       }" do
       people = [nil, nil, nil]
-      template = APIResultFactory.create_api_result("array").template(people, people.size)
+      template = APIArrayResult.create(people, people.size)
       template.class.name.must_equal "Hash"
       template[:data].class.name.must_equal "Hash"
       template[:data][:total_items].must_equal people.size
@@ -73,7 +73,7 @@ describe APIArrayResult do
       tom = Person.new("tom", 3)
       kite = Person.new("kite", 4)
       people = [tom, kite]
-      template = APIResultFactory.create_api_result("array").template(people, people.size)
+      template = APIArrayResult.create(people, people.size)
       template.class.name.must_equal "Hash"
       template[:data].class.name.must_equal "Hash"
       template[:data][:total_items].must_equal people.size
