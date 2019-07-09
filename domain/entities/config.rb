@@ -26,23 +26,22 @@ class Config
 
   def refresh
     @content = @repository.get_config(group, data_id)
+  end
 
-    if @data_id == "cipher-t2hut.bodleian.catalog.oss"
-      url = "http://10.202.101.62:9292/catalog/events"
-      data = {
-        event_name: "ConfigChanged",
-        payload: {
-          config_id: @identifier,
-          group: @group,
-          data_id: @data_id
-        }
+  def push(endpoint)
+    data = {
+      event_name: "ConfigUpdated",
+      payload: {
+        config_id: @identifier,
+        group: @group,
+        data_id: @data_id
       }
-      puts "JSON(data) ----- #{JSON(data)}"
+    }
+    puts "pushing new config... JSON(data) ----- #{JSON(data)}"
 
-      response = HTTPClient.post(url, JSON(data), { "Content-Type" => "application/json" })
+    response = HTTPClient.post(endpoint, JSON(data), { "Content-Type" => "application/json" })
 
-      puts "response.body ------- #{response.status_code}" 
-    end
+    puts "response.body ------- #{response.status_code}" 
   end
 
   def to_hash

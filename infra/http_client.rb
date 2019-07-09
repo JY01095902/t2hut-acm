@@ -14,23 +14,43 @@ end
 
 class HTTPClient
   def self.get(url, headers = nil)
-    uri = URI(url)
-    http = HTTPClient.http_class.new(uri.host, uri.port)
-    http.use_ssl = true if uri.scheme == 'https'
-    response = http.get(uri, headers)
+    begin
+      uri = URI(url)
+      http = HTTPClient.http_class.new(uri.host, uri.port)
+      http.use_ssl = true if uri.scheme == 'https'
+      response = http.get(uri, headers)
 
-    result = response == nil ? HTTPResponse.new(404, nil, nil) : 
-              HTTPResponse.new(response.code.to_i, response.body, response.to_hash)
+      result = response == nil ? HTTPResponse.new(404, nil, nil) : 
+                HTTPResponse.new(response.code.to_i, response.body, response.to_hash)
+    rescue => ex
+      puts ex.message
+      result = HTTPResponse.new(500, {
+        error: {
+          code: "HTTPClient.get error.",
+          message: ex.message
+        }
+      }, nil)
+    end
   end
 
   def self.post(url, data, headers = nil)
-    uri = URI(url)
-    http = HTTPClient.http_class.new(uri.host, uri.port)
-    http.use_ssl = true if uri.scheme == 'https'
-    response = http.post(uri, data, headers)
+    begin
+      uri = URI(url)
+      http = HTTPClient.http_class.new(uri.host, uri.port)
+      http.use_ssl = true if uri.scheme == 'https'
+      response = http.post(uri, data, headers)
 
-    result = response == nil ? HTTPResponse.new(404, nil, nil) : 
-              HTTPResponse.new(response.code.to_i, response.body, response.to_hash)
+      result = response == nil ? HTTPResponse.new(404, nil, nil) : 
+                HTTPResponse.new(response.code.to_i, response.body, response.to_hash)
+    rescue => ex
+      puts ex.message
+      result = HTTPResponse.new(500, {
+        error: {
+          code: "HTTPClient.get error.",
+          message: ex.message
+        }
+      }, nil)
+    end
   end
 
   def self.http_class
