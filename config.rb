@@ -17,7 +17,6 @@ module OWNConfig
     end
 
     private
-
     def initialize
       load_config
     end

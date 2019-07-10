@@ -1,22 +1,10 @@
 
-require "thread"
 
-t1 = Thread.new {
-  loop do
-    puts 1
-    sleep 1
-  end
-}
+def run 
+  puts 1
+  puts block_given?
+  yield if block_given?
+  puts 2
+end
 
-
-t2 = Thread.new {
-  sleep 5
-  t1.kill
-  t1 = Thread.new {
-    loop do
-      puts 2
-      sleep 1
-    end
-  }
-}
-sleep 50
+run

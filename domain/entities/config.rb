@@ -1,8 +1,6 @@
 
 require "base64"
-require "json"
 require_relative "../../repositories/config_repository.rb"
-require_relative "../../infra/http_client.rb"
 
 class Config
   attr_reader :identifier
@@ -26,22 +24,6 @@ class Config
 
   def refresh
     @content = @repository.get_config(group, data_id)
-  end
-
-  def push(endpoint)
-    data = {
-      event_name: "ConfigUpdated",
-      payload: {
-        config_id: @identifier,
-        group: @group,
-        data_id: @data_id
-      }
-    }
-    puts "pushing new config... JSON(data) ----- #{JSON(data)}"
-
-    response = HTTPClient.post(endpoint, JSON(data), { "Content-Type" => "application/json" })
-
-    puts "response.body ------- #{response.status_code}" 
   end
 
   def to_hash
