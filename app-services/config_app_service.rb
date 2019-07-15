@@ -16,6 +16,19 @@ class ConfigAppService
     config
   end
 
+  def get_config_by_group_and_data_id(group, data_id)
+    config_service = ConfigAppService.config_service_class.new
+    config = config_service.get_config_by_group_and_data_id(group, data_id)
+    
+    if config.encrypted?
+      encryption_service = ConfigAppService.encryption_service_class.new
+      config.content = encryption_service.decrypt(config.content)
+      config
+    end
+
+    config
+  end
+
   def get_all_configs
     config_service = ConfigAppService.config_service_class.new
     config_service.get_all_configs

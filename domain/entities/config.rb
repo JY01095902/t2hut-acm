@@ -8,14 +8,17 @@ class Config
   attr_reader :data_id
   attr_accessor :content
 
-  def initialize(identifier)
-    group, data_id = parse_identifier(identifier)
-    @identifier = identifier
-    @group = group
-    @data_id = data_id
+  def initialize(group, data_id)
+    @identifier = Base64.strict_encode64("#{group}|#{data_id}")
+    init(group, data_id)
+  end
 
-    @repository = Config.config_repository_class.new
-    @content = @repository.get_config(group, data_id)
+  def self.get(identifier)
+    config_id = Base64.strict_decode64(identifier)
+    idx = config_id.index("|")
+    group = config_id[0...idx]
+    data_id = config_id[idx + 1..config_id.size]
+    Config.new(group, data_id)
   end
 
   def encrypted?
@@ -35,20 +38,12 @@ class Config
     }
   end
 
-
-  def self.generate_identifier(group, data_id)
-    Base64.strict_encode64("#{group}|#{data_id}")
-  end
-
   private
-
-  def parse_identifier(identifier)
-    config_id = Base64.strict_decode64(identifier)
-    idx = config_id.index("|")
-    group = config_id[0...idx]
-    data_id = config_id[idx + 1..config_id.size]
-
-    return group, data_id
+  def init(group, data_id)
+    @group = group
+    @data_id = data_id
+    @repository = Config.config_repository_class.new
+    @content = @repository.get_config(group, data_id)
   end
 
   def self.config_repository_class

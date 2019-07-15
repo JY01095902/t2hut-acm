@@ -5,32 +5,32 @@ require_relative "../domain/entities/config.rb"
 
 class FakeConfig
   attr_accessor :content
-  def initialize(identifier)
-    puts identifier
-    group, data_id = parse_identifier(identifier)
-    @identifier = identifier
+  def initialize(group, data_id)
+    @identifier = Base64.strict_encode64("#{group}|#{data_id}")
     @group = group
     @data_id = data_id
     @content = "AAA"
   end 
-
-  def encrypted?
-    @data_id.start_with?("cipher-")
-  end
-
-  def parse_identifier(identifier)
+  
+  def self.get(identifier)
     config_id = Base64.strict_decode64(identifier)
     idx = config_id.index("|")
     group = config_id[0...idx]
     data_id = config_id[idx + 1..config_id.size]
+    FakeConfig.new(group, data_id)
+  end
 
-    return group, data_id
+  def encrypted?
+    @data_id.start_with?("cipher-")
   end
 end
 
 class FakeConfigService
   def get_config(identifier)
-    config = FakeConfig.new(identifier)
+    config = FakeConfig.get(identifier)
+  end
+  def get_config_by_group_and_data_id(group, data_id)
+    config = FakeConfig.new(group, data_id)
   end
 end
 
@@ -48,7 +48,7 @@ describe ConfigAppService do
         @encryption_service_class = FakeEncryptionService
       }
       service = ConfigAppService.new
-      config = service.get_config(Config.generate_identifier("T2HUT", "t2hut-acm-customers"))
+      config = service.get_config_by_group_and_data_id("T2HUT", "t2hut-acm-customers")
       config.wont_be_nil
       config.content.must_equal "AAA"
     end
@@ -58,7 +58,7 @@ describe ConfigAppService do
         @encryption_service_class = FakeEncryptionService
       }
       service = ConfigAppService.new
-      config = service.get_config(Config.generate_identifier("BODLEIAN", "cipher-t2hut.service.point"))
+      config = service.get_config_by_group_and_data_id("BODLEIAN", "cipher-t2hut.service.point")
       config.wont_be_nil
       config.encrypted?.must_equal true
       config.content.must_equal "BBB"

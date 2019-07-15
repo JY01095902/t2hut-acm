@@ -26,6 +26,24 @@ class FakeConfigAppService
     ' 
     FakeConfig.new(toml)
   end
+  def get_config_by_group_and_data_id(group, data_id)
+    toml = '
+      [[topics]]
+      group = "T2HUT"
+      data_id ="t2hut-acm-topics"
+      [[topics.consumers]]
+      endpoint = "http://10.202.101.62:9293/events"
+      [[topics.consumers]]
+      endpoint = "http://10.202.101.62:19293/events"
+
+      [[topics]]
+      group = "BODLEIAN"
+      data_id ="cipher-t2hut.bodleian.catalog.oss"
+      [[topics.consumers]]
+      endpoint = "http://10.202.101.62:9292/events"
+    ' 
+    FakeConfig.new(toml)
+  end
 end
 
 describe OWNConfig::TopicConfig do

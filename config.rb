@@ -22,9 +22,8 @@ module OWNConfig
     end
 
     def load_config
-      config_id = Config.generate_identifier("T2HUT", "t2hut.acm.topics")
       config_app_service = OWNConfig::TopicConfig.config_app_service_class.new
-      config = config_app_service.get_config(config_id)
+      config = config_app_service.get_config_by_group_and_data_id("T2HUT", "t2hut.acm.topics")
       
       unless config.content == nil 
         content = config.content.gsub("\r", "")
