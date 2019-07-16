@@ -62,11 +62,27 @@ class AliyunACMProxy
     result = response.status_code == 200 ? JSON.parse(response.body)["pageItems"] : nil
   end
 
-  def generate_listen_url(group, data_id, content)
+  # def generate_listen_url(group, data_id, content)
+  #   data_id = URI.encode_www_form_component(data_id)
+  #   group = URI.encode_www_form_component(group)
+  #   tenant = URI.encode_www_form_component(@namespace)
+  #   contentMD5 = URI.encode_www_form_component(OpenSSL::Digest::MD5.hexdigest(content))
+
+  #   two = "\u0002"
+  #   one = "\u0001"
+
+  #   query = "#{data_id}#{two}#{group}#{two}#{contentMD5}#{two}#{tenant}#{one}"
+  #   query = "Probe-Modify-Request=#{URI.encode_www_form_component(query)}"
+  #   url = "http://#{@server_ip}:8080/diamond-server/config.co"
+    
+  #   return url, query
+  # end
+
+  def generate_listen_url(group, data_id, content_md5)
     data_id = URI.encode_www_form_component(data_id)
     group = URI.encode_www_form_component(group)
     tenant = URI.encode_www_form_component(@namespace)
-    contentMD5 = URI.encode_www_form_component(OpenSSL::Digest::MD5.hexdigest(content))
+    contentMD5 = URI.encode_www_form_component(content_md5)
 
     two = "\u0002"
     one = "\u0001"

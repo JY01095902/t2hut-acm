@@ -2,9 +2,8 @@ require 'singleton'
 require "base64"
 require "json"
 require "toml"
-require_relative "domain/entities/config.rb"
 require_relative "domain/objects/topic.rb"
-require_relative "app-services/config_app_service.rb"
+require_relative "domain/entities/config.rb"
 
 module OWNConfig
   class TopicConfig
@@ -22,8 +21,7 @@ module OWNConfig
     end
 
     def load_config
-      config_app_service = OWNConfig::TopicConfig.config_app_service_class.new
-      config = config_app_service.get_config_by_group_and_data_id("T2HUT", "t2hut.acm.topics")
+      config = WatchedConfig.new("T2HUT", "t2hut.acm.topics")
       
       unless config.content == nil 
         content = config.content.gsub("\r", "")
@@ -41,10 +39,6 @@ module OWNConfig
         }
         @topics = topics
       end
-    end
-
-    def self.config_app_service_class
-      @config_app_service_class || ConfigAppService
     end
   end
 end

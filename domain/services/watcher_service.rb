@@ -21,7 +21,7 @@ class WatcherService
 
   def run_topic_watchers(topics)
     topics.each {|topic|
-      config = Config.new(topic.group, topic.data_id)
+      config = WatchedConfig.new(topic.group, topic.data_id)
       watcher = TopicWatcher.new(config, topic.consumers)
       watcher.run
       @topic_watchers << watcher

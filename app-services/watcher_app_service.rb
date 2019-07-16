@@ -23,7 +23,7 @@ class WatcherAppService
   end
 
   def watch_own_configs
-    configs = [Config.new("T2HUT", "t2hut.acm.topics")]
+    configs = [WatchedConfig.new("T2HUT", "t2hut.acm.topics")]
     watcher_service = WatcherService.instance
     watcher_service.run_own_watchers(configs)
   end
