@@ -3,37 +3,22 @@ require_relative "config.rb"
 require_relative "../../factories/aliyun_proxy_factory.rb"
 require_relative "../../infra/http_client.rb"
 
-module Observer
-  def attach(observer)
-    @observers = [] if @observer == nil
-    @observers << observer
-  end
-
-  def Detach(observer)
-    @observers.delete(observer)
-  end
-
-  def notify(content)
-    @observers.each{|observer|
-      observer.update(content)
-    } unless @observers == nil
-  end
-end
-
 class ConfigMonitor
-  include Observer
-
   def initialize(config)
     @config = config
   end
 
   def run
-    monitor {|is_updated|
-      if is_updated
-        @config.refresh
-        notify(@config.content)
-      end
-    }
+    loop do
+      puts "start monitoring..."
+      monitor {|is_updated|
+        if is_updated
+          @config.refresh
+          notify_watcher(@config.content)
+        end
+      }
+      puts "end monitoring..."
+    end
   end
 
   def monitor(&callback)
@@ -46,5 +31,20 @@ class ConfigMonitor
     else
       puts "Problems encountered while listening for configuration changes. Error: #{response.body}"
     end
-  end  
+  end
+
+  def attach_watcher(watcher)
+    @watchers = [] if @watchers == nil
+    @watchers << watcher
+  end
+
+  def detach_watcher(watcher)
+    @watchers.delete(watcher)
+  end
+
+  def notify_watcher(content)
+    @watchers.each{|watcher|
+      watcher.update(content)
+    } unless @watchers == nil
+  end
 end
