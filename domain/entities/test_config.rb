@@ -1,49 +1,46 @@
 require "minitest/autorun"
+require 'singleton'
 require_relative "config.rb"
 
 class FakeConfigRepository
-  def initialize ; end
-  def get_config(group, data_id)
-    "fake config's content."
+  include Singleton
+  def get_content(group, data_id )
+    if group == "T2HUT" && data_id = "t2hut-acm-topics"
+      "fake config's content."
+    else
+      nil
+    end
   end
 end
 
 describe Config do
-  describe "初始化" do
-    it "group和data_id都不为空，应该正确初始化" do
+  describe "init" do
+    it "使用格式正确并且有内容的identifier，应该可以获得正确的Config" do
       Config.instance_eval { @config_repository_class = FakeConfigRepository }
-      group = "T2HUT"
-      data_id = "t2hut-acm-customers"
-      config = Config.new(group, data_id)
-      config.identifier.must_equal "VDJIVVR8dDJodXQtYWNtLWN1c3RvbWVycw=="
-      config.content.must_equal "fake config's content."
-    end
-  end
-  describe "get" do
-    it "使用正确的identifier，应该获得正确的配置" do
-      Config.instance_eval { @config_repository_class = FakeConfigRepository }
-      config = Config.get("VDJIVVR8dDJodXQtYWNtLWN1c3RvbWVycw==")
+      config = Config.new("VDJIVVR8dDJodXQtYWNtLXRvcGljcw==")
+      config.identifier.must_equal "VDJIVVR8dDJodXQtYWNtLXRvcGljcw=="
       config.group.must_equal "T2HUT"
-      config.data_id.must_equal "t2hut-acm-customers"
+      config.data_id.must_equal "t2hut-acm-topics"
       config.content.must_equal "fake config's content."
     end
-  end
-  describe "验证是否是加密的配置" do
-    it "‘cipher-’开头的data_id，应该返回true" do
-      Config.instance_eval { @config_repository_class = FakeConfigRepository }
-      group = "T2HUT"
-      data_id = "cipher-t2hut-acm-customers"
-      config = Config.new(group, data_id)
-      config.identifier.must_equal "VDJIVVR8Y2lwaGVyLXQyaHV0LWFjbS1jdXN0b21lcnM="
-      config.encrypted?.must_equal true
+    it "使用格式正确但是没有内容的identifier，应该可以获得内容为空的Config" do
+      config = Config.new("VEVTVF9HUk9VUHxURVNUX0RBVEFfSUQ=")
+      config.identifier.must_equal "VEVTVF9HUk9VUHxURVNUX0RBVEFfSUQ="
+      config.group.must_equal "TEST_GROUP"
+      config.data_id.must_equal "TEST_DATA_ID"
+      config.content.must_be_nil
     end
-    it "非‘cipher-’开头的data_id，应该返回false" do
-      Config.instance_eval { @config_repository_class = FakeConfigRepository }
-      group = "T2HUT"
-      data_id = "t2hut-acm-customers"
-      config = Config.new(group, data_id)
-      config.identifier.must_equal "VDJIVVR8dDJodXQtYWNtLWN1c3RvbWVycw=="
-      config.encrypted?.must_equal false
+    it "使用格式不正确的identifier，应该可以获得Config对象，但是identifier, group, data_id和content都为nil" do
+      config = Config.new("AAA")
+      config.identifier.must_be_nil
+      config.group.must_be_nil
+      config.data_id.must_be_nil
+      config.content.must_be_nil
+      config = Config.new("QUFiYmNj")
+      config.identifier.must_be_nil
+      config.group.must_be_nil
+      config.data_id.must_be_nil
+      config.content.must_be_nil
     end
   end
 end
