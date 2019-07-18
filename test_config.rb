@@ -46,11 +46,11 @@ class FakeConfigAppService
   end
 end
 
-describe OWNConfig::TopicConfig do
+describe OWNConfig::OwnConfig do
   describe "初始化" do
     it "初始化成功后，应该有两个topic，内容应该跟toml文件中的一致" do
-      OWNConfig::TopicConfig.instance_eval{ @config_app_service_class = FakeConfigAppService }
-      config = OWNConfig::TopicConfig.instance
+      OwnConfig.instance_eval{ @config_app_service_class = FakeConfigAppService }
+      config = OwnConfig.instance
       config.topics.size.must_equal 2
       config.topics[0].consumers[0].endpoint.must_equal "http://10.202.101.62:9293/events"
       config.topics[0].group.must_equal "T2HUT"

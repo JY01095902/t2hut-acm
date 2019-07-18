@@ -10,11 +10,11 @@ class ConfigMonitor
 
   def run
     loop do
-      puts "start monitoring..."
+      puts "start monitoring for #{@config.group}|#{@config.data_id} ..."
       monitor {|is_updated|
         if is_updated
           @config.refresh
-          notify_watcher(@config.content)
+          notify_watcher(@config)
         end
       }
       puts "end monitoring..."
