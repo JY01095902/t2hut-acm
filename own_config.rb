@@ -14,10 +14,25 @@ class OwnConfig
     load_topics(config)
   end
 
+  def update_common(config)
+    load_common(config)
+  end
+
   private
   def initialize
-    config = Config.new(Config.generate_identifier("T2HUT", "t2hut.acm.topics"))
-    load_topics(config)
+    topics_config = Config.new(Config.generate_identifier("T2HUT", "t2hut.acm.topics"))
+    load_topics(topics_config)
+
+    # common_config = Config.new(Config.generate_identifier("T2HUT", "t2hut.acm.common"))
+    # load_common(common_config)
+  end
+
+  def load_common(config)
+    unless config.content.empty?
+      content = config.content.gsub("\r", "")
+      common_config = TOML.load(content) 
+      @monitoring_duration = common_config["monitoring_duration"].to_i
+    end
   end
 
   def load_topics(config)

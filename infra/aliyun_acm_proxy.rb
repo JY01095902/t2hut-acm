@@ -26,6 +26,7 @@ class AliyunACMProxy
       @secret_key = ENV["T2HUT_ACM_SECRET_KEY"]
       @server_ip = AliyunACMProxy.get_server_ip(@endpoint)
     end if valid_env?(env)
+    @long_pulling_timeout = 10000
   end
 
   def valid?
@@ -80,7 +81,7 @@ class AliyunACMProxy
 
   def generate_listen_headers(group)
     headers = generate_headers(group)
-    headers["longPullingTimeout"] = "10000"
+    headers["longPullingTimeout"] = @long_pulling_timeout.to_s
     return headers
   end
 
