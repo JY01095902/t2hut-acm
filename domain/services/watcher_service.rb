@@ -31,7 +31,8 @@ class WatcherService
 
   def run_own_watchers
     configs = [
-      Config.new(Config.generate_identifier("T2HUT", "t2hut.acm.topics"))
+      Config.new(Config.generate_identifier("T2HUT", "t2hut.acm.topics")),
+      Config.new(Config.generate_identifier("T2HUT", "t2hut.acm.common"))
     ]
     configs.each {|config|
       Thread.new {

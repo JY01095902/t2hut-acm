@@ -2,6 +2,7 @@ require "rack/cors"
 require "grape"
 require_relative "app-services/config_app_service.rb"
 require_relative "infra/api_result.rb"
+require_relative "own_config.rb"
 
 class API < Grape::API
   use Rack::Cors do
@@ -20,6 +21,11 @@ class API < Grape::API
     requires :identifier, type: String
   end
   get "configs/:identifier" do
+    unless OwnConfig.instance.api_service_enable
+      status :forbidden
+      return
+    end
+
     identifier = params[:identifier]
     config_app_service = ConfigAppService.new
     config = config_app_service.get_config(identifier)
@@ -29,6 +35,11 @@ class API < Grape::API
   end
 
   get :configs do
+    unless OwnConfig.instance.api_service_enable
+      status :forbidden
+      return
+    end
+    
     config_app_service = ConfigAppService.new
     configs = config_app_service.get_all_configs
 

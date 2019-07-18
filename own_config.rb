@@ -9,6 +9,7 @@ class OwnConfig
   include Singleton
 
   attr_reader :topics
+  attr_reader :api_service_enable
 
   def update_topics(config)
     load_topics(config)
@@ -23,15 +24,15 @@ class OwnConfig
     topics_config = Config.new(Config.generate_identifier("T2HUT", "t2hut.acm.topics"))
     load_topics(topics_config)
 
-    # common_config = Config.new(Config.generate_identifier("T2HUT", "t2hut.acm.common"))
-    # load_common(common_config)
+    common_config = Config.new(Config.generate_identifier("T2HUT", "t2hut.acm.common"))
+    load_common(common_config)
   end
 
   def load_common(config)
     unless config.content.empty?
       content = config.content.gsub("\r", "")
       common_config = TOML.load(content) 
-      @monitoring_duration = common_config["monitoring_duration"].to_i
+      @api_service_enable = common_config["api_service_enable"]
     end
   end
 
