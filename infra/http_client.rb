@@ -23,7 +23,7 @@ class HTTPClient
       result = response == nil ? HTTPResponse.new(404, nil, nil) : 
                 HTTPResponse.new(response.code.to_i, response.body, response.to_hash)
     rescue => ex
-      puts ex.message
+      Log.info(ex.message)
       result = HTTPResponse.new(500, {
         error: {
           code: "HTTPClient.get error.",
@@ -43,7 +43,7 @@ class HTTPClient
       result = response == nil ? HTTPResponse.new(404, nil, nil) : 
                 HTTPResponse.new(response.code.to_i, response.body, response.to_hash)
     rescue => ex
-      puts ex.message
+      Log.info(ex.message)
       result = HTTPResponse.new(500, {
         error: {
           code: "HTTPClient.get error.",

@@ -10,14 +10,14 @@ class ConfigMonitor
 
   def run
     loop do
-      puts "start monitoring for #{@config.group}|#{@config.data_id} ..."
+      Log.info("start monitoring for #{@config.group}|#{@config.data_id} ...")
       monitor {|is_updated|
         if is_updated
           @config.refresh
           notify_watcher(@config)
         end
       }
-      puts "end monitoring..."
+      Log.info("end monitoring...")
     end
   end
 
@@ -29,7 +29,7 @@ class ConfigMonitor
     if response.status_code == 200
       callback.call(!response.body.empty?)
     else
-      puts "Problems encountered while listening for configuration changes. Error: #{response.body}"
+      Log.info("Problems encountered while listening for configuration changes. Error: #{response.body}")
     end
   end
 

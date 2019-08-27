@@ -9,7 +9,7 @@ class ConfigWatcher
   end
 
   def update(config)
-    puts "#{ConfigWatcher}发现被观察者变了,#{config.content}, ready to push to #{@endpoint}."
+    Log.info("#{ConfigWatcher}发现被观察者变了,#{config.content}, ready to push to #{@endpoint}.")
     data = {
       event_name: "ConfigUpdated",
       payload: {
@@ -22,7 +22,7 @@ class ConfigWatcher
       "Content-Type": "application/json"
     }
     response = HTTPClient.post(@endpoint, data.to_json, headers)
-    puts "配置更新消息发送完毕，返回结果：#{response.status_code}, body：#{response.body}."
+    Log.info("配置更新消息发送完毕，返回结果：#{response.status_code}, body：#{response.body}.")
   end
 end
 
@@ -30,14 +30,14 @@ class OwnConfigWatcher
   def update(config)
     own_config = OwnConfig.instance
     if config.data_id == "t2hut.acm.topics"
-      puts "#{OwnConfigWatcher}发现#{config.data_id}变了, #{config.content}"
+      Log.info("#{OwnConfigWatcher}发现#{config.data_id}变了, #{config.content}")
       own_config.update_topics(config)
       WatcherService.instance.restart_topic_watchers(own_config.topics)
     elsif config.data_id == "t2hut.acm.common"
-      puts "#{OwnConfigWatcher}发现#{config.data_id}变了, #{config.content}"
+      Log.info("#{OwnConfigWatcher}发现#{config.data_id}变了, #{config.content}")
       own_config.update_common(config)
     else
-      puts "#{OwnConfigWatcher}发现#{config.data_id}变了"
+      Log.info("#{OwnConfigWatcher}发现#{config.data_id}变了")
     end
   end
 end

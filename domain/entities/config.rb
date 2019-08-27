@@ -10,7 +10,7 @@ class Config
   def initialize(identifier)
     group, data_id = Config.parse_identifier(identifier)
     if group.empty? || data_id.empty?
-      puts "identifier的格式不正确"
+      Log.info("identifier的格式不正确")
       return
     end
     @identifier = identifier

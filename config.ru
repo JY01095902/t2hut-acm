@@ -1,10 +1,9 @@
 
-require "logger"
 require_relative "main.rb"
 require_relative "app-services/watcher_app_service.rb"
+require_relative "infra/logger.rb"
 
-logger = Logger.new(STDERR)
-logger.info("runtime env: #{ENV["T2HUT_ENV"]}")
+Log.info("runtime env: #{ENV["T2HUT_ENV"]}")
 
 WatcherAppService.instance.watch
 
