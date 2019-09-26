@@ -22,7 +22,7 @@ class ConfigWatcher
       "Content-Type": "application/json"
     }
     response = HTTPClient.post(@endpoint, data.to_json, headers)
-    Log.info("配置更新消息发送完毕，返回结果：#{response.status_code}, body：#{response.body}.")
+    Log.info("配置更新消息发送完毕，返回结果：#{response.status_code}, body：#{response.body}, params：#{data.to_json}.")
   end
 end
 

@@ -46,7 +46,7 @@ class HTTPClient
       Log.info(ex.message)
       result = HTTPResponse.new(500, {
         error: {
-          code: "HTTPClient.get error.",
+          code: "HTTPClient.post error.",
           message: ex.message
         }
       }, nil)
